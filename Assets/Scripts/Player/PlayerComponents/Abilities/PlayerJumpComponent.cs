@@ -64,14 +64,17 @@ namespace Aspekt.PlayerController
             if (!player.HasTrait(PlayerTraits.Traits.CanJump)) return;
 
             if (state == States.StompMode) return;
-
+            
             player.SetState(StateLabels.IsJumping, true);
             player.SetState(StateLabels.IsStomping, false);
             state = States.JumpMode;
             anim.Play("Jump");
             jumpTimer = 0f;
-            body.velocity = new Vector2(body.velocity.x, JumpVelocity);
-            gravity.SetTargetVelocity(JumpVelocity * 0.5f);
+
+            DebugUI.SetText(player.GetPlayerState().GetFloat(StateLabels.TerrainBounciness).ToString());
+            float velocity = JumpVelocity * player.GetPlayerState().GetFloat(StateLabels.TerrainBounciness);
+            body.velocity = new Vector2(body.velocity.x, velocity);
+            gravity.SetTargetVelocity(velocity * 0.5f);
         }
 
         public void Stop()

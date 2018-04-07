@@ -98,6 +98,11 @@ namespace Aspekt.PlayerController
             SetState(StateLabels.IsInGravityField, false);
         }
 
+        public void Bounce(float bounciness)
+        {
+            body.velocity = new Vector2(body.velocity.x, bounciness * 10);
+        }
+
         public void Knockback(Vector2 direction, float force, float duration = 0.2f)
         {
             if (CheckState(StateLabels.IsKnockedBack)) return;

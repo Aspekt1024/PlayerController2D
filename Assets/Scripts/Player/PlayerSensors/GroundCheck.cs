@@ -13,6 +13,8 @@ namespace Aspekt.PlayerController
         private const int NUM_POINTS = 5;
         private bool[] groundedPoints = new bool[NUM_POINTS];
         private float[] checkPoints = new float[NUM_POINTS];
+
+        private Coroutine bouncinessRoutine;
         
         private void Start()
         {
@@ -23,6 +25,8 @@ namespace Aspekt.PlayerController
             {
                 checkPoints[i] = -1f + 2f * (i / (NUM_POINTS - 1f));
             }
+
+            playerState.Set(StateLabels.TerrainBounciness, 1f);
         }
 
         private void FixedUpdate()
@@ -36,6 +40,7 @@ namespace Aspekt.PlayerController
                     isGrounded = true;
                 }
             }
+
             playerState.Set(StateLabels.IsGrounded, isGrounded);
             playerState.Set(StateLabels.IsAtEdge, groundedPoints[0] == false || groundedPoints[NUM_POINTS - 1] == false);
         }
@@ -57,9 +62,31 @@ namespace Aspekt.PlayerController
                     playerState.Set(StateLabels.IsOnSlope, true);
                     return false;
                 }
+
+                TestObjects.BouncyObject bouncyObject = hit.collider.GetComponent<TestObjects.BouncyObject>();
+                if (bouncyObject != null)
+                {
+                    bouncinessRoutine = StartCoroutine(SetBounciness(bouncyObject.Bounciness));
+                }
             }
 
             return hit.collider != null && hit.point.y < origin.y - coll.bounds.extents.y * 0.9f;
+        }
+
+        private IEnumerator SetBounciness(float bounciness)
+        {
+            float bouncinessTimer = 0f;
+            const float bouncinessDuration = 0.4f;
+
+            playerState.Set(StateLabels.TerrainBounciness, bounciness);
+
+            while (bouncinessTimer < bouncinessDuration)
+            {
+                bouncinessTimer += Time.fixedDeltaTime;
+                yield return null;
+            }
+
+            playerState.Set(StateLabels.TerrainBounciness, 1f);
         }
     }
 

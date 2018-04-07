@@ -22,5 +22,6 @@ namespace Aspekt.PlayerController
 
         SlopeGradient,
         FieldStrength,
+        TerrainBounciness
     }
 }

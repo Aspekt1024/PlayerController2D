@@ -9,7 +9,7 @@ namespace Aspekt.PlayerController
         private float lateButtonGrace = 0.04f;
         private float earlyButtonGrace = 0.1f;
         private float wallDetachGrace = 0.1f;
-        private float doubleJumpDelay = 0.03f;
+        private float doubleJumpDelay = 0.05f;
 
         private bool jumpPressed;
         private float timeJumpPressed;
