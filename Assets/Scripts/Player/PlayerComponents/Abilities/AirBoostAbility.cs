@@ -33,6 +33,7 @@ namespace Aspekt.PlayerController
             body.velocity = new Vector2(body.velocity.x, BoostPower * 0.7f);
             gravity.SetTargetVelocity(BoostPower);
             player.SetState(StateLabels.IsBoosting, true);
+            player.GetEffect<BoostEffect>().Play();
             isRecharging = false;
         }
 
@@ -41,6 +42,7 @@ namespace Aspekt.PlayerController
             state = States.None;
             player.SetState(StateLabels.IsBoosting, false);
             gravity.ApplyNormalGravity();
+            player.GetEffect<BoostEffect>().Stop();
         }
 
         public bool CanBoost { get { return player.HasTrait(PlayerTraits.Traits.CanBoost) && boostAvailable > 0; } }
