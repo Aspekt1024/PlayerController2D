@@ -39,6 +39,11 @@ namespace Aspekt.PlayerController
                 Released();
                 return;
             }
+            
+            if (player.CheckState(StateLabels.IsStomping) && player.CheckState(StateLabels.IsInGravityField))
+            {
+                jumpComponent.Stop();
+            }
 
             if (!isAttachedToWall && player.CheckState(StateLabels.IsAttachedToWall))
             {
@@ -85,7 +90,11 @@ namespace Aspekt.PlayerController
             }
             else
             {
-                if (controller.GetMoveDirection().y < -0.5f && player.HasTrait(PlayerTraits.Traits.CanStomp))
+                if (player.CheckState(StateLabels.IsInGravityField))
+                {
+                    jumpComponent.Jump();
+                }
+                else if (controller.GetMoveDirection().y < -0.5f && player.HasTrait(PlayerTraits.Traits.CanStomp))
                 {
                     stomped = true;
                     jumpComponent.Stomp();

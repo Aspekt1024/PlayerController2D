@@ -41,7 +41,7 @@ namespace Aspekt.PlayerController
         
         private void FixedUpdate()
         {
-            if (!player.HasTrait(PlayerTraits.Traits.CanWallJump)) return;
+            if (!player.HasTrait(PlayerTraits.Traits.CanWallJump) || player.CheckState(StateLabels.IsInGravityField)) return;
 
             if (state == States.OnWall)
             {

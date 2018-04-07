@@ -8,6 +8,7 @@ namespace Aspekt.PlayerController
     {
         public float FallVelocity = 15f;
         public float MaxFallVelocity = 25f;
+        public float GravityFieldVelocityLerpTime = 0.5f;
 
         private float targetVerticalVelocity;
 
@@ -19,6 +20,7 @@ namespace Aspekt.PlayerController
 
         private float groundDetectedTimer;
         private float groundSetDelay = 0.1f;
+        private float timeInGravityField;
 
         private enum States
         {
@@ -52,6 +54,17 @@ namespace Aspekt.PlayerController
 
         private void FixedUpdate()
         {
+            if (player.CheckState(StateLabels.IsInGravityField))
+            {
+                timeInGravityField += Time.fixedDeltaTime;
+                body.velocity = new Vector2(body.velocity.x, Mathf.Lerp(body.velocity.y, player.GetPlayerState().GetFloat(StateLabels.FieldStrength), timeInGravityField / GravityFieldVelocityLerpTime));
+                return;
+            }
+            else
+            {
+                timeInGravityField = 0f;
+            }
+
             if (player.CheckState(StateLabels.IsAttachedToWall))
             {
                 body.velocity = Vector2.zero;

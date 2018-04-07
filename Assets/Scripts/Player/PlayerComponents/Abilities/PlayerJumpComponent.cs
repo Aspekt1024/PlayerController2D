@@ -129,7 +129,7 @@ namespace Aspekt.PlayerController
             doubleJumped = false;
         }
 
-        public bool CanDoubleJump { get { return doubleJumped == false; } }
+        public bool CanDoubleJump { get { return doubleJumped == false && player.HasTrait(PlayerTraits.Traits.CanDoubleJump); } }
 
         private bool IsGrounded()
         {

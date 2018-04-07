@@ -86,6 +86,18 @@ namespace Aspekt.PlayerController
 
         public bool IsFacingRight() { return model.transform.localScale.x > 0; }
 
+        public void EnterGravityField(float fieldStrength)
+        {
+            SetState(StateLabels.FieldStrength, fieldStrength);
+            SetState(StateLabels.IsInGravityField, true);
+        }
+
+        public void ExitGravityField()
+        {
+            SetState(StateLabels.FieldStrength, 0);
+            SetState(StateLabels.IsInGravityField, false);
+        }
+
         public void Knockback(Vector2 direction, float force, float duration = 0.2f)
         {
             if (CheckState(StateLabels.IsKnockedBack)) return;
