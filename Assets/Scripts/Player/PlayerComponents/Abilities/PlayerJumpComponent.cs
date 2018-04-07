@@ -70,8 +70,7 @@ namespace Aspekt.PlayerController
             state = States.JumpMode;
             anim.Play("Jump");
             jumpTimer = 0f;
-
-            DebugUI.SetText(player.GetPlayerState().GetFloat(StateLabels.TerrainBounciness).ToString());
+            
             float velocity = JumpVelocity * player.GetPlayerState().GetFloat(StateLabels.TerrainBounciness);
             body.velocity = new Vector2(body.velocity.x, velocity);
             gravity.SetTargetVelocity(velocity * 0.5f);
@@ -98,6 +97,7 @@ namespace Aspekt.PlayerController
         {
             if (doubleJumped || !player.HasTrait(PlayerTraits.Traits.CanDoubleJump)) return;
 
+            player.SetState(StateLabels.TerrainBounciness, 1f);
             doubleJumped = true;
             Jump();
             player.GetEffect<DoubleJumpEffect>().Play();
