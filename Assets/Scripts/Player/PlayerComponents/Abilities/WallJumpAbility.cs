@@ -41,19 +41,25 @@ namespace Aspekt.PlayerController
         
         private void FixedUpdate()
         {
+            if (!player.HasTrait(PlayerTraits.Traits.CanWallJump)) return;
+
             if (state == States.OnWall)
             {
                 if (Time.time > wallAttachTime + WallAttachDuration || !player.CheckState(StateLabels.IsAgainstWall))
                 {
                     player.GetPlayerState().Set(StateLabels.IsAttachedToWall, false);
                     state = States.None;
-                    gravity.DetachedFromWall();
+
+                    if (!player.CheckState(StateLabels.IsJumping))
+                    {
+                        gravity.ApplyNormalGravity();
+                    }
                 }
             }
 
             if (state == States.None && !player.CheckState(StateLabels.IsGrounded))
             {
-                if (player.CheckState(StateLabels.IsAgainstWall) && Mathf.Abs(prevXPos - player.transform.position.x) > 0.1f)
+                if (player.CheckState(StateLabels.IsAgainstWall) && !player.CheckState(StateLabels.IsStomping) && Mathf.Abs(prevXPos - player.transform.position.x) > 0.1f)
                 {
                     state = States.OnWall;
                     wallDirection = player.IsFacingRight() ? 1 : -1;
@@ -74,6 +80,7 @@ namespace Aspekt.PlayerController
         
         public void JumpFromWall()
         {
+            player.SetState(StateLabels.IsAttachedToWall, false);
             move.PropelJump(-wallDirection);
         }
     }

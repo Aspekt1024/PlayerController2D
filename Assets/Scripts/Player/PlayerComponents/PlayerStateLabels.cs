@@ -14,9 +14,9 @@ namespace Aspekt.PlayerController
         IsAtEdge,
         IsAttachedToWall,
         IsOnSlope,
-
-        CanAttachToWall,
-
+        IsJumping,
+        IsStomping,
+        
         SlopeGradient
     }
 }

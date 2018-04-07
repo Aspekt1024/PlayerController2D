@@ -32,13 +32,7 @@ namespace Aspekt.PlayerController
             anim = player.GetComponent<Animator>();
             gravity = player.GetComponent<PlayerGravity>();
         }
-
-        private void Start()
-        {
-            player.AddTrait(PlayerTraits.Traits.CanStomp);
-            player.AddTrait(PlayerTraits.Traits.CanJump);
-        }
-
+        
         private void FixedUpdate()
         {
             if (player.CheckState(StateLabels.IsKnockedBack) && state != States.None)
@@ -60,7 +54,7 @@ namespace Aspekt.PlayerController
             if (jumpTimer > AirTime)
             {
                 state = States.None;
-                gravity.SoftFall();
+                player.SetState(StateLabels.IsJumping, false);
             }
         }
         
@@ -70,7 +64,9 @@ namespace Aspekt.PlayerController
             if (!player.HasTrait(PlayerTraits.Traits.CanJump)) return;
 
             if (state == States.StompMode) return;
-            
+
+            player.SetState(StateLabels.IsJumping, true);
+            player.SetState(StateLabels.IsStomping, false);
             state = States.JumpMode;
             anim.Play("Jump");
             jumpTimer = 0f;
@@ -81,13 +77,15 @@ namespace Aspekt.PlayerController
         public void Stop()
         {
             state = States.None;
-            body.velocity = Vector2.zero;
-            gravity.SetTargetVelocity(0);
+            player.SetState(StateLabels.IsJumping, false);
+            player.SetState(StateLabels.IsStomping, false);
         }
 
         public void Stomp()
         {
             state = States.StompMode;
+            player.SetState(StateLabels.IsJumping, false);
+            player.SetState(StateLabels.IsStomping, true);
             doubleJumped = true;
             body.velocity = new Vector2(body.velocity.x, -40f);
             gravity.SetTargetVelocity(-40f);
@@ -108,7 +106,8 @@ namespace Aspekt.PlayerController
 
             if (state == States.JumpMode)
             {
-                gravity.HardFall();
+                player.SetState(StateLabels.IsJumping, false);
+                gravity.ApplyNormalGravity();
             }
             state = States.None;
         }
@@ -117,7 +116,8 @@ namespace Aspekt.PlayerController
         {
             if (state == States.StompMode)
             {
-                // TODO set effect on ground
+                player.SetState(StateLabels.IsJumping, false);
+                player.SetState(StateLabels.IsStomping, false);
                 player.GetEffect<DoubleJumpEffect>().Play();
             }
             else if (state != States.None)

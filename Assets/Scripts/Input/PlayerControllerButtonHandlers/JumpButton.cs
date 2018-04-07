@@ -32,8 +32,6 @@ namespace Aspekt.PlayerController
 
         private void Update()
         {
-            player.GetPlayerState().Set(StateLabels.CanAttachToWall, Time.time > timeJumpPressed + 0.03f);
-            
             if (player.CheckState(StateLabels.IsTouchingCeiling))
             {
                 Released();
@@ -68,6 +66,8 @@ namespace Aspekt.PlayerController
 
         public override void Pressed()
         {
+            if (player.CheckState(StateLabels.IsStomping)) return;
+
             jumpPressed = true;
             timeJumpPressed = Time.time;
             checkDoubleJump = false;
@@ -78,8 +78,8 @@ namespace Aspekt.PlayerController
             }
             else if (isAttachedToWall)
             {
-                jumpComponent.Jump();
                 wallJump.JumpFromWall();
+                jumpComponent.Jump();
             }
             else
             {
@@ -128,6 +128,19 @@ namespace Aspekt.PlayerController
                 jumpComponent.Jump();
             }
         }
+        
+        private void SetAttachedToWall()
+        {
+            jumpComponent.Stop();
+            isAttachedToWall = true;
+            isGrounded = true;
+
+            if (jumpPressed && Time.time < timeJumpPressed + earlyButtonGrace)
+            {
+                jumpComponent.Jump();
+                wallJump.JumpFromWall();
+            }
+        }
 
         private void SetNotGrounded()
         {
@@ -142,19 +155,6 @@ namespace Aspekt.PlayerController
             {
                 checkDoubleJump = false;
                 jumpComponent.DoubleJump();
-            }
-        }
-
-        private void SetAttachedToWall()
-        {
-            jumpComponent.Stop();
-            isAttachedToWall = true;
-            isGrounded = true;
-
-            if (jumpPressed && Time.time < timeJumpPressed + earlyButtonGrace)
-            {
-                jumpComponent.Jump();
-                wallJump.JumpFromWall();
             }
         }
     }

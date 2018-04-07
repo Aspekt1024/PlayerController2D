@@ -64,6 +64,11 @@ namespace Aspekt.PlayerController
             return playerState;
         }
 
+        public void SetState(StateLabels label, object value)
+        {
+            playerState.Set(label, value);
+        }
+
         public bool CheckState(StateLabels label)
         {
             return playerState.Check(label);
@@ -89,6 +94,7 @@ namespace Aspekt.PlayerController
 
         private IEnumerator KnockbackRoutine(float direction, float force, float duration)
         {
+            GetEffect<TestObjects.CollisionEffect>().Play();
             float timer = 0f;
             while (timer < duration)
             {

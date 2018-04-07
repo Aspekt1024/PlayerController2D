@@ -13,6 +13,7 @@ namespace Aspekt.Items
         {
             if (collision.tag == "Player")
             {
+                DebugUI.SetText("Trait Unlocked:\n" + TraitUnlock.ToString());
                 Player.Instance.AddTrait(TraitUnlock);
                 Destroy(gameObject);
             }

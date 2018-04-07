@@ -11,7 +11,8 @@ namespace Aspekt.PlayerController
         {
             CanJump,
             CanDoubleJump,
-            CanStomp
+            CanStomp,
+            CanWallJump,
         }
 
         private Dictionary<Traits, bool> traits = new Dictionary<Traits, bool>();

@@ -39,12 +39,7 @@ namespace Aspekt.PlayerController
             targetVerticalVelocity = velocity;
         }
 
-        public void SoftFall()
-        {
-            targetVerticalVelocity = -FallVelocity;
-        }
-
-        public void HardFall()
+        public void ApplyNormalGravity()
         {
             body.velocity = new Vector2(body.velocity.x, body.velocity.y / 3f - FallVelocity / 3f);
             targetVerticalVelocity = -FallVelocity;
@@ -52,19 +47,17 @@ namespace Aspekt.PlayerController
 
         public void DetachedFromWall()
         {
-            if (state == States.Falling)
-            {
-                targetVerticalVelocity = -MaxFallVelocity;
-            }
+            targetVerticalVelocity = -MaxFallVelocity;
         }
 
         private void FixedUpdate()
         {
             if (player.CheckState(StateLabels.IsAttachedToWall))
             {
+                body.velocity = Vector2.zero;
+                targetVerticalVelocity = 0;
                 return;
             }
-
             CheckState();
             body.velocity = new Vector2(body.velocity.x, Mathf.Lerp(body.velocity.y, targetVerticalVelocity, 2f * Time.deltaTime));
         }
@@ -103,13 +96,17 @@ namespace Aspekt.PlayerController
             }
             else
             {
-                if (body.velocity.y >= 0)
+                if (player.CheckState(StateLabels.IsJumping))
                 {
                     SetJumping();
                 }
-                else
+                else if (state == States.Jumping)
                 {
-                    SetFalling();
+                    targetVerticalVelocity = -FallVelocity;
+                    if (body.velocity.y < 0)
+                    {
+                        SetFalling();
+                    }
                 }
             }
         }
