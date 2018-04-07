@@ -19,6 +19,7 @@ namespace Aspekt.PlayerController
 
         private PlayerJumpComponent jumpComponent;
         private WallJumpAbility wallJump;
+        private AirBoostAbility airBoost;
 
         private bool isGrounded;
         private bool stomped;
@@ -28,11 +29,12 @@ namespace Aspekt.PlayerController
         {
             jumpComponent = player.GetAbility<PlayerJumpComponent>();
             wallJump = player.GetAbility<WallJumpAbility>();
+            airBoost = player.GetAbility<AirBoostAbility>();
         }
 
         private void Update()
         {
-            if (player.CheckState(StateLabels.IsTouchingCeiling))
+            if (player.CheckState(StateLabels.IsTouchingCeiling) && !player.CheckState(StateLabels.IsBoosting))
             {
                 Released();
                 return;
@@ -106,8 +108,16 @@ namespace Aspekt.PlayerController
 
         public override void Released()
         {
+            if (player.CheckState(StateLabels.IsBoosting))
+            {
+                airBoost.StopBoost();
+            }
+            else
+            {
+                jumpComponent.JumpReleased();
+            }
+
             jumpPressed = false;
-            jumpComponent.JumpReleased();
             timeJumpPressed = Time.time + earlyButtonGrace + 1f;
         }
 
@@ -154,7 +164,15 @@ namespace Aspekt.PlayerController
             if (Time.time > timeJumpPressed + doubleJumpDelay)
             {
                 checkDoubleJump = false;
-                jumpComponent.DoubleJump();
+
+                if (jumpComponent.CanDoubleJump)
+                {
+                    jumpComponent.DoubleJump();
+                }
+                else
+                {
+                    airBoost.StartBoost();
+                }
             }
         }
     }

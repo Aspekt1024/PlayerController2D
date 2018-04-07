@@ -16,6 +16,7 @@ namespace Aspekt.PlayerController
         IsOnSlope,
         IsJumping,
         IsStomping,
+        IsBoosting,
         
         SlopeGradient
     }

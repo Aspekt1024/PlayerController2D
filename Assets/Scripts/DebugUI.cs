@@ -7,6 +7,7 @@ public class DebugUI : MonoBehaviour {
 
     public float TextDuration = 3f;
     public Text DebugTextBlock;
+    public Image BoostIndicator;
 
     [HideInInspector] public static DebugUI Instance;
 
@@ -37,6 +38,11 @@ public class DebugUI : MonoBehaviour {
                 ClearText();
             }
         }
+    }
+
+    public static void SetBoostIndicatorFill(float fillAmount)
+    {
+        instance.BoostIndicator.fillAmount = fillAmount;
     }
 
     public static void SetText(string text)

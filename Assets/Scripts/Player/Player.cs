@@ -59,6 +59,7 @@ namespace Aspekt.PlayerController
         }
         #endregion
 
+        #region States
         public PlayerState GetPlayerState()
         {
             return playerState;
@@ -73,6 +74,7 @@ namespace Aspekt.PlayerController
         {
             return playerState.Check(label);
         }
+        #endregion
 
         public void FaceDirection(float xDirection)
         {

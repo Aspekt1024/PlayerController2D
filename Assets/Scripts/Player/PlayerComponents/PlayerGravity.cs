@@ -14,7 +14,8 @@ namespace Aspekt.PlayerController
         private Player player;
         private Rigidbody2D body;
         private Animator anim;
-        private float colliderExtentY;
+
+        private PlayerBoundsCheck boundsCheck;
 
         private float groundDetectedTimer;
         private float groundSetDelay = 0.1f;
@@ -30,8 +31,7 @@ namespace Aspekt.PlayerController
             player = GetComponent<Player>();
             anim = GetComponent<Animator>();
             body = GetComponent<Rigidbody2D>();
-
-            colliderExtentY = GetComponent<Collider2D>().bounds.extents.y;
+            boundsCheck = new PlayerBoundsCheck(player, body);
         }
 
         public void SetTargetVelocity(float velocity)
@@ -64,17 +64,7 @@ namespace Aspekt.PlayerController
 
         private void LateUpdate()
         {
-            // Ensure we haven't fallen through the floor
-            if (state == States.Falling)
-            {
-                RaycastHit2D hit = Physics2D.Raycast(player.transform.position, body.velocity, body.velocity.magnitude * Time.fixedDeltaTime, 1 << LayerMask.NameToLayer("Terrain"));
-
-                if (hit.collider != null)
-                {
-                    player.transform.position = hit.point + colliderExtentY * Vector2.up;
-                    body.velocity = Vector2.zero;
-                }
-            }
+            boundsCheck.CheckBounds(Time.deltaTime);
         }
 
         private void CheckState()

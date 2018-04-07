@@ -129,6 +129,8 @@ namespace Aspekt.PlayerController
             doubleJumped = false;
         }
 
+        public bool CanDoubleJump { get { return doubleJumped == false; } }
+
         private bool IsGrounded()
         {
             return player.CheckState(StateLabels.IsGrounded);
