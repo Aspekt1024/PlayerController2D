@@ -52,6 +52,13 @@ namespace Aspekt.PlayerController
             targetVerticalVelocity = -MaxFallVelocity;
         }
 
+        public void AddVelocityInField(Vector2 velocity)
+        {
+            timeInGravityField = 0f;
+            float fieldStrength = player.GetPlayerState().GetFloat(StateLabels.FieldStrength);
+            body.velocity = new Vector2(velocity.x, velocity.y / (1 + Mathf.Abs(fieldStrength)) + fieldStrength);
+        }
+
         private void FixedUpdate()
         {
             if (player.CheckState(StateLabels.IsInGravityField))

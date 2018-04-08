@@ -9,6 +9,7 @@ namespace Aspekt.IO
         MoveLeftPressed,
         MoveRightPressed,
         JumpPressed,
+        StompPressed,
         MeleePressed,
         ShieldPressed,
         ShootPressed,

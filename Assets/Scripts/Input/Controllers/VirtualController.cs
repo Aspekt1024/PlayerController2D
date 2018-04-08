@@ -58,12 +58,12 @@ namespace Aspekt.IO
             }
         }
 
-        public Vector2 GetMoveDirection(Vector2 relativeToPoint)
+        public Vector2 GetMoveDirection()
         {
             switch (mode)
             {
                 case InputMode.Keyboard:
-                    return keyboardInput.GetAimDirection(relativeToPoint);
+                    return keyboardInput.GetMoveDirection();
                 case InputMode.Controller:
                     return controllerInput.GetMoveDirection();
                 default:

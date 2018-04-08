@@ -71,6 +71,12 @@ namespace Aspekt.PlayerController
             }
         }
 
+        public void StompPressed()
+        {
+            if (player.CheckState(StateLabels.IsStomping) || isGrounded || isAttachedToWall || player.CheckState(StateLabels.IsInGravityField)) return;
+            jumpComponent.Stomp();
+        }
+
         public override void Pressed()
         {
             if (player.CheckState(StateLabels.IsStomping)) return;
@@ -125,7 +131,7 @@ namespace Aspekt.PlayerController
             {
                 jumpComponent.JumpReleased();
             }
-
+            
             jumpPressed = false;
             timeJumpPressed = Time.time + earlyButtonGrace + 1f;
         }

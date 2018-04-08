@@ -19,6 +19,7 @@ namespace Aspekt.PlayerController
         IsBoosting,
 
         IsInGravityField,
+        IsStunned,
 
         SlopeGradient,
         FieldStrength,

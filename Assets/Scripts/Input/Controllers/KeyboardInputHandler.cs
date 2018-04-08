@@ -14,17 +14,18 @@ namespace Aspekt.IO
         private Dictionary<KeyCode, InputLabels> getKeyDownBindings = new Dictionary<KeyCode, InputLabels>();
         private Dictionary<KeyCode, InputLabels> getKeyUpBindings = new Dictionary<KeyCode, InputLabels>();
         private Dictionary<KeyCode, InputLabels> getKeyBindings = new Dictionary<KeyCode, InputLabels>();
-
+        
         private VirtualController virtualController;
+
+        private bool movedByKey;
 
         public KeyboardInputHandler(VirtualController vc)
         {
             virtualController = vc;
-
-            getKeyDownBindings.Add(KeyCode.A, InputLabels.MoveLeftPressed);
-            getKeyDownBindings.Add(KeyCode.D, InputLabels.MoveRightPressed);
+            
             getKeyDownBindings.Add(KeyCode.W, InputLabels.JumpPressed);
             getKeyDownBindings.Add(KeyCode.Space, InputLabels.JumpPressed);
+            getKeyDownBindings.Add(KeyCode.S, InputLabels.StompPressed);
             getKeyDownBindings.Add(KeyCode.F, InputLabels.MeleePressed);
             getKeyDownBindings.Add(KeyCode.Mouse0, InputLabels.ShootPressed);
             getKeyDownBindings.Add(KeyCode.Mouse1, InputLabels.ShieldPressed);
@@ -67,17 +68,23 @@ namespace Aspekt.IO
                     virtualController.InputReceived(binding.Value);
                 }
             }
-            
-            if (Input.GetKeyUp(MOVE_RIGHT) || Input.GetKeyUp(MOVE_LEFT))
+
+            if (Input.GetKeyDown(MOVE_LEFT) || Input.GetKey(MOVE_LEFT))
             {
-                if (!Input.GetKey(MOVE_LEFT) && !Input.GetKey(MOVE_RIGHT))
-                {
-                    virtualController.InputReceived(InputLabels.MoveReleased);
-                }
-                else
-                {
-                    inputReceived = true;
-                }
+                virtualController.InputReceived(InputLabels.MoveLeftPressed);
+                inputReceived = true;
+                movedByKey = true;
+            }
+            else if (Input.GetKeyDown(MOVE_RIGHT) || (Input.GetKey(MOVE_RIGHT) && !Input.GetKeyUp(MOVE_RIGHT)))
+            {
+                virtualController.InputReceived(InputLabels.MoveRightPressed);
+                inputReceived = true;
+                movedByKey = true;
+            }
+            else if (movedByKey)
+            {
+                virtualController.InputReceived(InputLabels.MoveReleased);
+                movedByKey = false;
             }
             
             return inputReceived;
@@ -86,6 +93,28 @@ namespace Aspekt.IO
         public Vector2 GetAimDirection(Vector2 relativeToPoint)
         {
             return (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - relativeToPoint;
+        }
+
+        public Vector2 GetMoveDirection()
+        {
+            Vector2 moveDirection = new Vector2();
+            if (Input.GetKey(MOVE_LEFT))
+            {
+                moveDirection += Vector2.left;
+            }
+            if (Input.GetKey(MOVE_RIGHT))
+            {
+                moveDirection += Vector2.right;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                moveDirection += Vector2.down;
+            }
+            if (Input.GetKey(KeyCode.W))
+            {
+                moveDirection += Vector2.up;
+            }
+            return moveDirection;
         }
     }
 }

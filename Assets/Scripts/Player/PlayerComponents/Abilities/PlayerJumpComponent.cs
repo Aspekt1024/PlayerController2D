@@ -72,8 +72,16 @@ namespace Aspekt.PlayerController
             jumpTimer = 0f;
             
             float velocity = JumpVelocity * player.GetPlayerState().GetFloat(StateLabels.TerrainBounciness);
-            body.velocity = new Vector2(body.velocity.x, velocity);
-            gravity.SetTargetVelocity(velocity * 0.5f);
+
+            if (player.CheckState(StateLabels.IsInGravityField))
+            {
+                gravity.AddVelocityInField(new Vector2(body.velocity.x, velocity));
+            }
+            else
+            {
+                body.velocity = new Vector2(body.velocity.x, velocity);
+                gravity.SetTargetVelocity(velocity * 0.5f);
+            }
         }
 
         public void Stop()

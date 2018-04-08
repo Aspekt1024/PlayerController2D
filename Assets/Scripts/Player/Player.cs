@@ -85,6 +85,7 @@ namespace Aspekt.PlayerController
         }
 
         public bool IsFacingRight() { return model.transform.localScale.x > 0; }
+        public bool IsIncapacitated { get { return CheckState(StateLabels.IsStunned) || CheckState(StateLabels.IsKnockedBack); } }
 
         public void EnterGravityField(float fieldStrength)
         {
@@ -101,6 +102,14 @@ namespace Aspekt.PlayerController
         public void Bounce(float bounciness)
         {
             body.velocity = new Vector2(body.velocity.x, bounciness * 10);
+        }
+
+        public void Stun()
+        {
+            if (CheckState(StateLabels.IsStunned)) return;
+
+            playerState.Set(StateLabels.IsStunned, true);
+            model.GetComponentInChildren<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.4f, 1f);
         }
 
         public void Knockback(Vector2 direction, float force, float duration = 0.2f)

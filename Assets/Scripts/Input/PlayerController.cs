@@ -46,7 +46,7 @@ namespace Aspekt.IO
 
         public Vector2 GetMoveDirection()
         {
-            return controller.GetMoveDirection(player.transform.position);
+            return controller.GetMoveDirection();
         }
 
         public void OnInputReceived(InputLabels input)
@@ -57,7 +57,7 @@ namespace Aspekt.IO
             }
             else if (InGame())
             {
-                if (player.CheckState(StateLabels.IsKnockedBack))
+                if (player.IsIncapacitated)
                 {
                     ActionInputsInGameIncapacitated(input);
                 }
@@ -87,6 +87,9 @@ namespace Aspekt.IO
                     break;
                 case InputLabels.JumpPressed:
                     jumpButton.Pressed();
+                    break;
+                case InputLabels.StompPressed:
+                    jumpButton.StompPressed();
                     break;
                 case InputLabels.MeleePressed:
                     break;
