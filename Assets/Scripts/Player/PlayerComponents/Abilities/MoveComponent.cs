@@ -29,6 +29,11 @@ namespace Aspekt.PlayerController
 
         private void FixedUpdate()
         {
+            if (player.IsIncapacitated)
+            {
+                MoveReleased();
+            }
+
             playerAnim.SetFloat("MoveSpeed", Mathf.Abs(body.velocity.x));
 
             if (forceMoveTimer > 0)

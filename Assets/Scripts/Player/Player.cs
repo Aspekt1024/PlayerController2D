@@ -22,6 +22,7 @@ namespace Aspekt.PlayerController
         private PlayerEffectHandler effectHandler;
         
         private Rigidbody2D body;
+        private Color spriteColor;
 
         private void Awake()
         {
@@ -29,6 +30,7 @@ namespace Aspekt.PlayerController
             {
                 instance = this;
                 GetPlayerComponents();
+                spriteColor = model.GetComponentInChildren<SpriteRenderer>().color;
             }
         }
 
@@ -104,12 +106,12 @@ namespace Aspekt.PlayerController
             body.velocity = new Vector2(body.velocity.x, bounciness * 10);
         }
 
-        public void Stun()
+        public void Stun(float duration = -1f)
         {
             if (CheckState(StateLabels.IsStunned)) return;
 
             playerState.Set(StateLabels.IsStunned, true);
-            model.GetComponentInChildren<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.4f, 1f);
+            StartCoroutine(StunRoutine(duration));
         }
 
         public void Knockback(Vector2 direction, float force, float duration = 0.2f)
@@ -131,6 +133,19 @@ namespace Aspekt.PlayerController
                 yield return null;
             }
             playerState.Set(StateLabels.IsKnockedBack, false);
+        }
+
+        private IEnumerator StunRoutine(float duration)
+        {
+            float timer = 0f;
+            model.GetComponentInChildren<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.4f, 1f);
+            while (timer < duration)
+            {
+                timer += Time.deltaTime;
+                yield return null;
+            }
+            playerState.Set(StateLabels.IsStunned, false);
+            model.GetComponentInChildren<SpriteRenderer>().color = spriteColor;
         }
 
         private void GetPlayerComponents()

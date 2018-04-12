@@ -15,6 +15,7 @@ namespace Aspekt.IO
         private MoveComponent move;
 
         private JumpButton jumpButton;
+        private ShootButton shootButton;
 
         private bool gamePaused;
 
@@ -36,6 +37,7 @@ namespace Aspekt.IO
             controller = new VirtualController(this);
             player = GetComponent<Player>();
             jumpButton = (JumpButton)buttons.Find(x => x.GetType().Equals(typeof(JumpButton)));
+            shootButton = (ShootButton)buttons.Find(x => x.GetType().Equals(typeof(ShootButton)));
             move = player.GetAbility<MoveComponent>();
         }
         
@@ -92,6 +94,7 @@ namespace Aspekt.IO
                     jumpButton.StompPressed();
                     break;
                 case InputLabels.MeleePressed:
+                    shootButton.Pressed();
                     break;
                 case InputLabels.ShieldPressed:
                     break;
@@ -127,6 +130,7 @@ namespace Aspekt.IO
                 case InputLabels.ShieldReleased:
                     break;
                 case InputLabels.MeleeReleased:
+                    shootButton.Released();
                     break;
                 default:
                     break;

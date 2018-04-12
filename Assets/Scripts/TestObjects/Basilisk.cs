@@ -14,6 +14,14 @@ namespace Aspekt.TestObjects
             StunEffect.SetActive(false);
         }
 
+        private void Update()
+        {
+            if (!StunEffect.GetComponent<ParticleSystem>().isPlaying)
+            {
+                StunEffect.SetActive(false);
+            }
+        }
+
         private void OnTriggerEnter2D(Collider2D collision)
         {
             Player player = collision.GetComponent<Player>();
@@ -26,7 +34,7 @@ namespace Aspekt.TestObjects
         private void LolImABasilisk(Player player)
         {
             if (player.CheckState(StateLabels.IsStunned)) return;
-            player.Stun();
+            player.Stun(2f);
             StunEffect.SetActive(true);
         }
     }
