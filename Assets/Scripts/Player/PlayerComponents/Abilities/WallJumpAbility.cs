@@ -7,6 +7,7 @@ namespace Aspekt.PlayerController
     public class WallJumpAbility : PlayerAbility
     {
         public float WallAttachDuration = 0.5f;
+        public float AttachFromGroundDelay = 0.3f;
 
         private enum States
         {
@@ -15,13 +16,15 @@ namespace Aspekt.PlayerController
         private States state;
 
         private float wallAttachTime;
-        private float prevXPos;
+        private bool canAttachToWall;
+        private float leftGroundTime;
 
         private Player player;
         private Rigidbody2D body;
         private PlayerGravity gravity;
 
         private MoveComponent move;
+        private IO.PlayerController playerController;
 
         private WallAttachEffect attachEffect;
 
@@ -33,15 +36,25 @@ namespace Aspekt.PlayerController
             body = player.GetComponent<Rigidbody2D>();
             gravity = player.GetComponent<PlayerGravity>();
             state = States.None;
-            prevXPos = player.transform.position.x;
             attachEffect = player.GetEffect<WallAttachEffect>();
+            canAttachToWall = true;
 
             move = player.GetAbility<MoveComponent>();
+            playerController = IO.PlayerController.Get();
         }
         
         private void FixedUpdate()
         {
             if (!player.HasTrait(PlayerTraits.Traits.CanWallJump) || player.CheckState(StateLabels.IsInGravityField)) return;
+
+            if (!canAttachToWall && player.CheckState(StateLabels.IsJumping))
+            {
+                canAttachToWall = true;
+            }
+            if (player.CheckState(StateLabels.IsGrounded))
+            {
+                leftGroundTime = Time.time;
+            }
 
             if (state == States.OnWall)
             {
@@ -49,6 +62,7 @@ namespace Aspekt.PlayerController
                 {
                     player.GetPlayerState().Set(StateLabels.IsAttachedToWall, false);
                     state = States.None;
+                    canAttachToWall = false;
 
                     if (!player.CheckState(StateLabels.IsJumping))
                     {
@@ -59,7 +73,8 @@ namespace Aspekt.PlayerController
 
             if (state == States.None && !player.CheckState(StateLabels.IsGrounded))
             {
-                if (player.CheckState(StateLabels.IsAgainstWall) && !player.CheckState(StateLabels.IsStomping) && Mathf.Abs(prevXPos - player.transform.position.x) > 0.1f)
+                if (canAttachToWall && player.CheckState(StateLabels.IsAgainstWall) && !player.CheckState(StateLabels.IsStomping)
+                    && Mathf.Abs(playerController.GetMoveDirection().x) > 0.1f && Time.time > leftGroundTime + AttachFromGroundDelay)
                 {
                     state = States.OnWall;
                     wallDirection = player.IsFacingRight() ? 1 : -1;
@@ -74,8 +89,6 @@ namespace Aspekt.PlayerController
                     attachEffect.Play();
                 }
             }
-
-            prevXPos = player.transform.position.x;
         }
         
         public void JumpFromWall()

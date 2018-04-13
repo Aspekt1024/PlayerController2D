@@ -15,7 +15,7 @@ namespace Aspekt.IO
         private bool movedByAxis;
         private bool shotByAxis;
 
-#if UNITY_STANDALONE_WIN
+#if UNITY_STANDALONE_WIN || UNITY_WEBGL
         // These key bindings are for windows
         // see http://wiki.unity3d.com/index.php?title=Xbox360Controller
         private const KeyCode A_BUTTON = KeyCode.JoystickButton0;
@@ -122,7 +122,7 @@ namespace Aspekt.IO
         public Vector2 GetAimDirection()
         {
             Vector2 aimAxis = new Vector2(Input.GetAxis(AIM_AXIS_X), Input.GetAxis(AIM_AXIS_Y));
-            Vector2 aimDirection = Vector2.right;
+            Vector2 aimDirection = Vector2.zero;
             if (aimAxis.magnitude > 0.3f)
             {
                 aimDirection = new Vector2(aimAxis.x, -aimAxis.y);
@@ -134,7 +134,7 @@ namespace Aspekt.IO
         public Vector2 GetMoveDirection()
         {
             Vector2 moveAxis = new Vector2(Input.GetAxis(HORIZONTAL_AXIS), Input.GetAxis(VERTICAL_AXIS));
-            Vector2 moveDirection = Vector2.right;
+            Vector2 moveDirection = Vector2.zero;
 
             if (moveAxis.magnitude > 0.3f)
             {

@@ -54,7 +54,7 @@ namespace Aspekt.IO
                 case InputMode.Controller:
                     return controllerInput.GetAimDirection();
                 default:
-                    return Vector2.right;
+                    return Vector2.zero;
             }
         }
 
@@ -67,7 +67,7 @@ namespace Aspekt.IO
                 case InputMode.Controller:
                     return controllerInput.GetMoveDirection();
                 default:
-                    return Vector2.right;
+                    return Vector2.zero;
             }
         }
 

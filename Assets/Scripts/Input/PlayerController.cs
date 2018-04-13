@@ -46,6 +46,11 @@ namespace Aspekt.IO
             controller.CheckForInput();
         }
 
+        public static PlayerController Get()
+        {
+            return Player.Instance.GetComponent<PlayerController>();
+        }
+
         public Vector2 GetMoveDirection()
         {
             return controller.GetMoveDirection();

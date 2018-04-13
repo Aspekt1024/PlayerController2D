@@ -80,13 +80,9 @@ namespace Aspekt.PlayerController
             }
             CheckState();
             body.velocity = new Vector2(body.velocity.x, Mathf.Lerp(body.velocity.y, targetVerticalVelocity, 2f * Time.deltaTime));
-        }
-
-        private void LateUpdate()
-        {
             boundsCheck.CheckBounds(Time.deltaTime);
         }
-
+        
         private void CheckState()
         {
             if (player.CheckState(StateLabels.IsGrounded))

@@ -5,7 +5,9 @@ using UnityEngine;
 public class BasicCamera : MonoBehaviour {
 
     public Transform Target;
-    public float FollowSpeed = 2f;
+    public float FollowSpeed = 100f;
+
+    private Vector3 velocity;
 
     private float initialZ;
 
@@ -14,10 +16,16 @@ public class BasicCamera : MonoBehaviour {
         initialZ = transform.position.z;
     }
 
-    private void FixedUpdate()
+
+    private void LateUpdate()
     {
-        transform.position = Vector3.Lerp(transform.position, Target.position, Time.deltaTime * 2f);
+        transform.position = Vector3.SmoothDamp(transform.position, Target.position, ref velocity, 0.01f, 100f, Time.deltaTime);
+
+
+
+
         transform.position = new Vector3(transform.position.x, transform.position.y, initialZ);
+
     }
 
 }
