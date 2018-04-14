@@ -26,9 +26,15 @@ namespace Aspekt.TestObjects
             gameObject.SetActive(false);
         }
 
-        public void Move(Vector3 moveDirection)
+        public void Move(Vector3 moveDirection, float maxDistance)
         {
             transform.position += moveDirection * MoveSpeed * Time.deltaTime / Time.timeScale;
+
+            Vector2 distVector = transform.position - Player.Instance.transform.position;
+            if (distVector.magnitude > maxDistance)
+            {
+                transform.position = (Vector2)Player.Instance.transform.position + distVector.normalized * maxDistance;
+            }
         }
 
         public void SetPosition(Vector2 position)
